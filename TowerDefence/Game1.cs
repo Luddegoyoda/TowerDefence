@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using Spline;
+using CatmullRom;
 
 namespace TowerDefence
 {
@@ -8,6 +11,8 @@ namespace TowerDefence
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        GamemodeManager gamemodeManager;
 
         public Game1()
         {
@@ -20,12 +25,17 @@ namespace TowerDefence
         {
             // TODO: Add your initialization logic here
 
+            gamemodeManager = new GamemodeManager(GraphicsDevice);
+            
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            AssetManager.LoadAllTextures(Content);
 
             // TODO: use this.Content to load your game content here
         }
@@ -35,7 +45,7 @@ namespace TowerDefence
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            gamemodeManager.Update();
 
             base.Update(gameTime);
         }
@@ -45,6 +55,12 @@ namespace TowerDefence
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+
+            _spriteBatch.Begin();
+
+            gamemodeManager.Draw(_spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

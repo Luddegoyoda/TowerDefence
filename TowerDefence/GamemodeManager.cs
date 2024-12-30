@@ -21,15 +21,21 @@ namespace TowerDefence
         {
             this.graphicsDevice = graphicsDevice;
             shouldGenerateMap = true;
+            CreatePath();
         }
 
         public void Update()
         {
-            if (shouldGenerateMap)
+            
+        }
+
+        public CatmullRomPath GetPath()
+        {
+            if (enemyPath != null) 
             {
-                CreatePath();
-                shouldGenerateMap= false;
+                return enemyPath;
             }
+            return null;
         }
 
         public void CreatePath()
@@ -49,6 +55,7 @@ namespace TowerDefence
         public void Draw(SpriteBatch spriteBatch)
         {
             enemyPath.DrawFill(graphicsDevice, AssetManager.allTextures[0]);
+            spriteBatch.End();
         }
     }
 }

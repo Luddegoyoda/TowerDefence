@@ -13,6 +13,7 @@ namespace TowerDefence
         private SpriteBatch _spriteBatch;
 
         GamemodeManager gamemodeManager;
+        EnemyManager enemyManager;
 
         public Game1()
         {
@@ -26,6 +27,7 @@ namespace TowerDefence
             // TODO: Add your initialization logic here
 
             gamemodeManager = new GamemodeManager(GraphicsDevice);
+            enemyManager = new EnemyManager();
             
 
             base.Initialize();
@@ -36,6 +38,7 @@ namespace TowerDefence
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             AssetManager.LoadAllTextures(Content);
+            enemyManager.path = gamemodeManager.GetPath();
 
             // TODO: use this.Content to load your game content here
         }
@@ -46,6 +49,7 @@ namespace TowerDefence
                 Exit();
 
             gamemodeManager.Update();
+            enemyManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -59,8 +63,12 @@ namespace TowerDefence
             _spriteBatch.Begin();
 
             gamemodeManager.Draw(_spriteBatch);
-
+            _spriteBatch.Begin();
             _spriteBatch.End();
+            enemyManager.Draw(_spriteBatch);
+            
+
+
 
             base.Draw(gameTime);
         }

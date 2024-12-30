@@ -15,6 +15,7 @@ namespace TowerDefence
         public static void LoadAllTextures(ContentManager content )
         {
             allTextures.Add(content.Load<Texture2D>("photomode_31072024_224844"));
+            allTextures.Add(content.Load<Texture2D>("Virus"));
         }
     }
 }

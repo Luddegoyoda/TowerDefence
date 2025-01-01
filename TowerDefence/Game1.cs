@@ -12,6 +12,9 @@ namespace TowerDefence
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        public static RenderTarget2D renderTarget;
+        public float scale = 0.4444f;
+
         GamemodeManager gamemodeManager;
         EnemyManager enemyManager;
 
@@ -28,7 +31,9 @@ namespace TowerDefence
 
             gamemodeManager = new GamemodeManager(GraphicsDevice);
             enemyManager = new EnemyManager();
-            
+
+            _graphics.PreferredBackBufferHeight = 1280;
+            _graphics.PreferredBackBufferWidth = 720;
 
             base.Initialize();
         }
@@ -36,6 +41,8 @@ namespace TowerDefence
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            renderTarget = new RenderTarget2D(GraphicsDevice,1920 , 1080);
 
             AssetManager.LoadAllTextures(Content);
             enemyManager.path = gamemodeManager.GetPath();
@@ -56,19 +63,22 @@ namespace TowerDefence
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            scale = 1f / (1080f / GraphicsDevice.Viewport.Height);
 
-            // TODO: Add your drawing code here
+            GraphicsDevice.SetRenderTarget(renderTarget);
+            GraphicsDevice.Clear(Color.Green);
 
             _spriteBatch.Begin();
-
             gamemodeManager.Draw(_spriteBatch);
-            _spriteBatch.Begin();
-            _spriteBatch.End();
-            enemyManager.Draw(_spriteBatch);
             
+            enemyManager.Draw(_spriteBatch);
 
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Green);
 
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(renderTarget, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

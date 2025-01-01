@@ -17,6 +17,7 @@ namespace TowerDefence
         public int health;
         public float speed = 0.5f, position = 0;
         CatmullRomPath path;
+        Healthbar healthbar;
 
         public Enemy(CatmullRomPath path) 
         {

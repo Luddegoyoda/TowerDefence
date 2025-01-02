@@ -18,6 +18,8 @@ namespace TowerDefence
         GamemodeManager gamemodeManager;
         EnemyManager enemyManager;
 
+        Tower tower;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -47,6 +49,8 @@ namespace TowerDefence
             AssetManager.LoadAllTextures(Content);
             enemyManager.path = gamemodeManager.GetPath();
 
+            tower = new Tower(AssetManager.allTextures[1], new Vector2(600,600), new Rectangle(1, 1, 16, 16), 0, 0, 0, 0);
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -69,7 +73,10 @@ namespace TowerDefence
             GraphicsDevice.Clear(Color.Green);
 
             _spriteBatch.Begin();
+            tower.Draw(_spriteBatch);
             gamemodeManager.Draw(_spriteBatch);
+
+            
             
             enemyManager.Draw(_spriteBatch);
 

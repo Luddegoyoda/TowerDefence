@@ -35,7 +35,7 @@ namespace TowerDefence
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            
+            spriteBatch.Draw(texture, position, Color.White);
         }
     }
 }

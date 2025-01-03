@@ -17,8 +17,8 @@ namespace TowerDefence
 
         GamemodeManager gamemodeManager;
         EnemyManager enemyManager;
+        TowerManager towerManager;
 
-        Tower tower;
 
         public Game1()
         {
@@ -33,6 +33,7 @@ namespace TowerDefence
 
             gamemodeManager = new GamemodeManager(GraphicsDevice);
             enemyManager = new EnemyManager();
+            towerManager = new TowerManager(GraphicsDevice);
 
             _graphics.PreferredBackBufferHeight = 1280;
             _graphics.PreferredBackBufferWidth = 720;
@@ -49,10 +50,14 @@ namespace TowerDefence
             AssetManager.LoadAllTextures(Content);
             enemyManager.path = gamemodeManager.GetPath();
 
-            tower = new Tower(AssetManager.allTextures[1], new Vector2(600,600), new Rectangle(1, 1, 16, 16), 0, 0, 0, 0);
+            towerManager.towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(330,450), new Rectangle(1, 1, 16, 16), 250, 5, 0, 0));
+            
+
 
             // TODO: use this.Content to load your game content here
         }
+
+       
 
         protected override void Update(GameTime gameTime)
         {
@@ -61,6 +66,29 @@ namespace TowerDefence
 
             gamemodeManager.Update();
             enemyManager.Update(gameTime);
+            towerManager.Update(gameTime);
+
+
+            foreach(Enemy enemy in enemyManager.enemies)
+            {
+                foreach(Tower tower in towerManager.towers)
+                {
+                    float Dx = tower.position.X - enemy.hitBox.X;
+                    float Dy = tower.position.Y - enemy.hitBox.Y;
+                    float distance = (Dx * Dx) + (Dy * Dy);
+                    float radiusSquared = tower.range * tower.range;
+                    if (distance <= radiusSquared)
+                    {
+                        tower.enemiesInRange.Add(enemy);
+                    }
+                    else
+                    {
+                        
+                        tower.enemiesInRange.Remove(enemy);
+                        
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -73,11 +101,12 @@ namespace TowerDefence
             GraphicsDevice.Clear(Color.Green);
 
             _spriteBatch.Begin();
-            tower.Draw(_spriteBatch);
+            towerManager.Draw(_spriteBatch);
+            
             gamemodeManager.Draw(_spriteBatch);
 
             
-            
+
             enemyManager.Draw(_spriteBatch);
 
             GraphicsDevice.SetRenderTarget(null);

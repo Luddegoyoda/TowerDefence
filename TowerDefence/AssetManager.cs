@@ -11,12 +11,14 @@ namespace TowerDefence
     public static class AssetManager
     {
        public static List<Texture2D> allTextures = new List<Texture2D>();
+        public static SpriteFont font;
 
         public static void LoadAllTextures(ContentManager content )
         {
             allTextures.Add(content.Load<Texture2D>("photomode_31072024_224844"));
             allTextures.Add(content.Load<Texture2D>("Virus"));
             allTextures.Add(content.Load<Texture2D>("HealPreview"));
+            font = content.Load<SpriteFont>("font");
         }
     }
 }

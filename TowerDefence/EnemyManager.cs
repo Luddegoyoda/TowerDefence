@@ -13,10 +13,10 @@ namespace TowerDefence
     public class EnemyManager
     {
         public CatmullRomPath path;
-        List<Enemy> enemies;
+        public List<Enemy> enemies;
         int timeToNextSpawn = 0;
-        int spawnTimer = 400;
-        int maxEnemies = 3;
+        int spawnTimer = 200;
+        int maxEnemies = 4;
         int currentEnemies = 0;
         public EnemyManager()
         {
@@ -31,6 +31,20 @@ namespace TowerDefence
                 if (enemy.health > 0)
                 {
                     enemy.Update(gameTime);
+                }
+            }
+
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (enemies[i].position > 1 && enemies[i].health > 0)
+                {
+                    GamemodeManager.lives--;
+                    enemies.RemoveAt(i);
+                }
+                else if (enemies[i].health <= 0)
+                {
+                    GamemodeManager.resources += enemies[i].pointGain;
+                    enemies.RemoveAt(i);
                 }
             }
         }

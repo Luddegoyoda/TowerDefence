@@ -15,6 +15,9 @@ namespace TowerDefence
         GraphicsDevice graphicsDevice;
         CatmullRomPath enemyPath;
 
+        public static int lives = 10;
+        public static int resources = 500;
+
         bool shouldGenerateMap;
 
         public GamemodeManager(GraphicsDevice graphicsDevice)
@@ -55,6 +58,12 @@ namespace TowerDefence
         public void Draw(SpriteBatch spriteBatch)
         {
             enemyPath.DrawFill(graphicsDevice, AssetManager.allTextures[0]);
+
+            spriteBatch.DrawString(AssetManager.font, "Lives: " + lives, new Vector2(0, 0), Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0f);
+            
+
+            spriteBatch.DrawString(AssetManager.font, "Resources: " + resources, new Vector2(0, 80), Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0f);
+
             spriteBatch.End();
         }
     }

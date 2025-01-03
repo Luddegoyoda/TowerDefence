@@ -14,7 +14,7 @@ namespace TowerDefence
     public class Enemy
     {
         public Rectangle hitBox;
-        public int health;
+        public int health, pointGain;
         public float speed = 0.5f, position = 0;
         CatmullRomPath path;
         Healthbar healthbar;
@@ -22,7 +22,8 @@ namespace TowerDefence
         public Enemy(CatmullRomPath path) 
         {
             this.path = path;
-            health = 1;
+            health = 100;
+            pointGain = 100;
         }
 
         public void Update(GameTime gameTime)
@@ -35,6 +36,11 @@ namespace TowerDefence
                 hitBox.Y = (int)vec.Y;
             }
 
+        }
+
+        public void TakeDamage(int damage)
+        {
+            health -= damage;
         }
 
         public void Draw(SpriteBatch spriteBatch)

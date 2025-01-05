@@ -19,6 +19,8 @@ namespace TowerDefence
         EnemyManager enemyManager;
         TowerManager towerManager;
 
+        CatmullRomPath enemyPath;
+
 
         public Game1()
         {
@@ -31,12 +33,13 @@ namespace TowerDefence
         {
             // TODO: Add your initialization logic here
 
-            gamemodeManager = new GamemodeManager(GraphicsDevice);
+            gamemodeManager = new GamemodeManager();
             enemyManager = new EnemyManager();
             towerManager = new TowerManager(GraphicsDevice);
 
-            _graphics.PreferredBackBufferHeight = 1280;
-            _graphics.PreferredBackBufferWidth = 720;
+            _graphics.PreferredBackBufferHeight = 720;
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -45,10 +48,13 @@ namespace TowerDefence
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            renderTarget = new RenderTarget2D(GraphicsDevice,1920 , 1080);
+            renderTarget = new RenderTarget2D(GraphicsDevice, 1280,720 );
 
             AssetManager.LoadAllTextures(Content);
-            enemyManager.path = gamemodeManager.GetPath();
+
+
+            enemyManager.path = CreatePath();
+            
 
             towerManager.towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(330,450), new Rectangle(1, 1, 16, 16), 250, 5, 0, 0));
             
@@ -57,7 +63,21 @@ namespace TowerDefence
             // TODO: use this.Content to load your game content here
         }
 
-       
+        public CatmullRomPath CreatePath()
+        {
+            enemyPath = new CatmullRomPath(GraphicsDevice, 0.5f);
+            enemyPath.Clear();
+
+            enemyPath.AddPoint(new Vector2(0, 0));
+            enemyPath.AddPoint(new Vector2(300, 100));
+            enemyPath.AddPoint(new Vector2(400, 200));
+            enemyPath.AddPoint(new Vector2(600, 350));
+            enemyPath.AddPoint(new Vector2(800, 600));
+
+            enemyPath.DrawFillSetup(GraphicsDevice, 30, 5, 26);
+
+            return enemyPath;
+        }
 
         protected override void Update(GameTime gameTime)
         {
@@ -95,7 +115,6 @@ namespace TowerDefence
 
         protected override void Draw(GameTime gameTime)
         {
-            scale = 1f / (1080f / GraphicsDevice.Viewport.Height);
 
             GraphicsDevice.SetRenderTarget(renderTarget);
             GraphicsDevice.Clear(Color.Green);
@@ -105,15 +124,19 @@ namespace TowerDefence
             
             gamemodeManager.Draw(_spriteBatch);
 
-            
-
+            enemyPath.DrawFill(GraphicsDevice, AssetManager.allTextures[0]);
+            _spriteBatch.End();
+            _spriteBatch.Begin();
             enemyManager.Draw(_spriteBatch);
+            
+            
+            _spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Green);
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(renderTarget, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            _spriteBatch.Draw(renderTarget, Vector2.Zero, Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

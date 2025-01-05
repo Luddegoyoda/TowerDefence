@@ -45,10 +45,9 @@ namespace TowerDefence
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Begin();
-            
+            spriteBatch.End();
             path.DrawMovingObject(position, spriteBatch, AssetManager.allTextures[1]);
-
+            spriteBatch.Begin();
         }
     }
 

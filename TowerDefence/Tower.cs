@@ -13,9 +13,10 @@ namespace TowerDefence
         public Texture2D texture;
         public Vector2 position;
         public Rectangle hitbox;
-        public int range, damage;
+        public int range, damage, cost;
         float attackSpeed;
         int timeToNextAttack;
+        public bool showingDetail;
 
         public List<Enemy> enemiesInRange;
 
@@ -29,10 +30,15 @@ namespace TowerDefence
             this.attackSpeed = attackSpeed;
             this.timeToNextAttack = timeToNextAttack;
             enemiesInRange= new List<Enemy>();
+            showingDetail = false;
+            cost = 500;
         }
 
         public override void Update(GameTime gameTime)
         {
+            hitbox.X = (int)position.X;
+            hitbox.Y = (int)position.Y;
+
             timeToNextAttack += gameTime.ElapsedGameTime.Milliseconds;
             foreach (Enemy enemy in enemiesInRange)
             {
@@ -51,6 +57,8 @@ namespace TowerDefence
                 }
             }
         }
+
+
 
         public override void Draw(SpriteBatch spriteBatch)
         {

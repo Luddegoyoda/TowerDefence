@@ -24,6 +24,7 @@ namespace TowerDefence
             this.path = path;
             health = 100;
             pointGain = 100;
+            healthbar = new Healthbar(health);
         }
 
         public void Update(GameTime gameTime)
@@ -48,6 +49,7 @@ namespace TowerDefence
             spriteBatch.End();
             path.DrawMovingObject(position, spriteBatch, AssetManager.allTextures[1]);
             spriteBatch.Begin();
+            healthbar.Draw(spriteBatch);
         }
     }
 

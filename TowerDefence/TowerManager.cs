@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,13 +17,32 @@ namespace TowerDefence
         public TowerManager(GraphicsDevice graphicsDevice) 
         {
             this.graphicsDevice = graphicsDevice;
+
         }
 
         public void Update(GameTime gameTime)
         {
+            var mouseState = Mouse.GetState();
+            var mousePoint = new Point(mouseState.X, mouseState.Y);
             foreach (Tower tower in towers)
             {
                 tower.Update(gameTime);
+                if (tower.hitbox.Contains(mousePoint) && mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    tower.showingDetail = true;
+                }
+                else
+                {
+                    tower.showingDetail = false;
+                }
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D1))
+            {
+                if (GamemodeManager.resources >= towers[0].cost)
+                {
+                    towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(1, 1, 40, 40), 250, 5, 0, 0));
+                    GamemodeManager.resources -= towers[0].cost;
+                }
             }
         }
 
@@ -80,8 +100,12 @@ namespace TowerDefence
         {
             foreach(Tower tower in towers)
             {
-                circleTexture = CreateOutlinedCircleTexture(tower.range, Color.White, 1);
-                spriteBatch.Draw(circleTexture, new Vector2(tower.position.X + 16, tower.position.Y + 16), null, Color.White, 0f, new Vector2(tower.range, tower.range), 1f, SpriteEffects.None, 0f);
+                if (tower.showingDetail)
+                {
+                    circleTexture = CreateOutlinedCircleTexture(tower.range, Color.White, 1);
+                    spriteBatch.Draw(circleTexture, new Vector2(tower.position.X + 16, tower.position.Y + 16), null, Color.White, 0f, new Vector2(tower.range, tower.range), 1f, SpriteEffects.None, 0f);
+                }
+                
                 tower.Draw(spriteBatch);
             }
             

@@ -17,9 +17,12 @@ namespace TowerDefence
         public Healthbar(int maxHealth)
         {
             this.maxHealth = maxHealth;
-            
+            redFill = new Rectangle(28, 123, 40, 16);
         }
-
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(AssetManager.allTextures[2],new Rectangle(0,0,40,16),redFill,Color.White);
+        }
 
     }
 }

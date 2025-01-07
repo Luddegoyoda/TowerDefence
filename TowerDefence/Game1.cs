@@ -56,7 +56,7 @@ namespace TowerDefence
             enemyManager.path = CreatePath();
             
 
-            towerManager.towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(330,450), new Rectangle(1, 1, 16, 16), 250, 5, 0, 0));
+            towerManager.towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(330,450), new Rectangle(1, 1, 40, 40), 250, 5, 0, 0));
             
 
 
@@ -89,9 +89,9 @@ namespace TowerDefence
             towerManager.Update(gameTime);
 
 
-            foreach(Enemy enemy in enemyManager.enemies)
+            foreach (Enemy enemy in enemyManager.enemies)
             {
-                foreach(Tower tower in towerManager.towers)
+                foreach (Tower tower in towerManager.towers)
                 {
                     float Dx = tower.position.X - enemy.hitBox.X;
                     float Dy = tower.position.Y - enemy.hitBox.Y;
@@ -103,9 +103,9 @@ namespace TowerDefence
                     }
                     else
                     {
-                        
+
                         tower.enemiesInRange.Remove(enemy);
-                        
+
                     }
                 }
             }

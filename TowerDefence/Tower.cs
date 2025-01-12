@@ -14,13 +14,14 @@ namespace TowerDefence
         public Vector2 position;
         public Rectangle hitbox;
         public int range, damage, cost;
-        float attackSpeed;
+        public float attackSpeed;
         int timeToNextAttack;
-        public bool showingDetail;
+        public int damageUpgrade = 0, attackSpeedUpgrade = 0, SlowingUpgrade = 0, AOEUpgrade = 0;
+        public bool showingDetail, slowing, areaOfEffect;
 
         public List<Enemy> enemiesInRange;
 
-        public Tower(Texture2D texture,Vector2 position,Rectangle hitbox, int range, int damage, float attackSpeed, int timeToNextAttack) : base(texture,position,hitbox)
+        public Tower(Texture2D texture,Vector2 position,Rectangle hitbox, int range, int damage, float attackSpeed, int timeToNextAttack, int cost) : base(texture,position,hitbox)
         {
             this.texture = texture;
             this.position = position;
@@ -29,9 +30,10 @@ namespace TowerDefence
             this.damage = damage;
             this.attackSpeed = attackSpeed;
             this.timeToNextAttack = timeToNextAttack;
-            enemiesInRange= new List<Enemy>();
+            this.cost = cost;
+
+            enemiesInRange = new List<Enemy>();
             showingDetail = false;
-            cost = 500;
         }
 
         public override void Update(GameTime gameTime)
@@ -44,7 +46,20 @@ namespace TowerDefence
             {
                 if (timeToNextAttack > attackSpeed && enemy != null && enemy.health > 0)
                 {
-                    enemy.TakeDamage(damage);
+                    enemy.TakeDamage(damage * (damageUpgrade + 1));
+                    if (SlowingUpgrade > 0)
+                    {
+                        float slowValue = SlowingUpgrade / 10f;
+                        if (enemy.speed - slowValue >= 0.1)
+                        {
+                            enemy.speed = enemy.speed - slowValue;
+                        }
+                        else
+                        {
+                            enemy.speed = 0.1f;
+                        }
+                        
+                    }
                     timeToNextAttack= 0;
                     break;
                 }

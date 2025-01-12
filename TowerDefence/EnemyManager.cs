@@ -15,9 +15,9 @@ namespace TowerDefence
         public CatmullRomPath path;
         public List<Enemy> enemies;
         int timeToNextSpawn = 0, timeToNextWave = 0;
-        int spawnTimer = 200, waveSpawnTime = 10000;
+        int spawnTimer = 200, waveSpawnTime = 5000;
         int maxEnemies = 4;
-        int currentEnemies = 0, aliveEnemiesAtGoal = 0;
+        int currentEnemies = 0;
         public EnemyManager()
         {
             enemies = new List<Enemy>();
@@ -25,20 +25,14 @@ namespace TowerDefence
 
         public void Update(GameTime gameTime)
         {
-            
+
             LoadWave(gameTime);
             foreach(Enemy enemy in enemies)
             {
                 if (enemy.health > 0)
                 {
                     enemy.Update(gameTime);
-                }
-                if (enemy.position > 1)
-                {
-                    aliveEnemiesAtGoal++;
-                    
-                }
-                
+                }  
             }
             
             for (int i = 0; i < enemies.Count; i++)
@@ -60,9 +54,9 @@ namespace TowerDefence
             {
                 timeToNextWave = 0;
                 currentEnemies = 0;
-                aliveEnemiesAtGoal = 0;
                 enemies.Clear();
                 LoadWave(gameTime);
+                maxEnemies++;
             }
 
 
@@ -70,14 +64,22 @@ namespace TowerDefence
 
         public void LoadWave(GameTime gameTime)
         {
-            
             timeToNextSpawn += gameTime.ElapsedGameTime.Milliseconds;
             if (currentEnemies < maxEnemies)
             {
                 if (timeToNextSpawn > spawnTimer)
                 {
                     timeToNextSpawn = 0;
-                    Enemy enemy = new Enemy(path);
+                    Enemy enemy;
+                    if (maxEnemies > 8)
+                    {
+                        enemy = new Enemy(path, 150, 0.5f, 250);
+                    }
+                    else
+                    {
+                        enemy = new Enemy(path, 50, 0.2f, 100);
+                    }
+                    
                     enemies.Add(enemy);
                     currentEnemies++;
                 }

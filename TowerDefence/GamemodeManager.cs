@@ -12,16 +12,13 @@ namespace TowerDefence
 {
     public class GamemodeManager
     {
-
         public static int lives = 10;
         public static int resources = 500;
 
-        bool shouldGenerateMap;
 
         public GamemodeManager()
         {
 
-            shouldGenerateMap = true;
         }
 
         public void Update()
@@ -35,7 +32,6 @@ namespace TowerDefence
 
             spriteBatch.DrawString(AssetManager.font, "Lives: " + lives, new Vector2(0, 0), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
             
-
             spriteBatch.DrawString(AssetManager.font, "Resources: " + resources, new Vector2(0, 20), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
 
             

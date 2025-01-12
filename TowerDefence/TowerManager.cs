@@ -14,10 +14,11 @@ namespace TowerDefence
         public List<Tower> towers = new List<Tower>();
         Texture2D circleTexture;
         GraphicsDevice graphicsDevice;
+        static UpgradeView upgradeView;
         public TowerManager(GraphicsDevice graphicsDevice) 
         {
             this.graphicsDevice = graphicsDevice;
-
+            //upgradeView= new UpgradeView();
         }
 
         public void Update(GameTime gameTime)
@@ -30,20 +31,33 @@ namespace TowerDefence
                 if (tower.hitbox.Contains(mousePoint) && mouseState.LeftButton == ButtonState.Pressed)
                 {
                     tower.showingDetail = true;
+                    UpgradeView.ShowTowerInformation(tower);
                 }
-                else
+
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.C))
+            {
+                foreach (Tower tower in towers)
                 {
                     tower.showingDetail = false;
+                    UpgradeView.HideTowerInformation();
                 }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D1))
             {
                 if (GamemodeManager.resources >= towers[0].cost)
                 {
-                    towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(1, 1, 40, 40), 250, 5, 0, 0));
-                    GamemodeManager.resources -= towers[0].cost;
+                    Tower newTower = new Tower(AssetManager.allTextures[1], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 250, 25, 500, 0, 500);
+                    if (CanPlaceTower(newTower))
+                    {
+                        towers.Add(newTower);
+                        GamemodeManager.resources -= towers[0].cost;
+                    }
+
                 }
             }
+
+
         }
 
 
@@ -84,17 +98,27 @@ namespace TowerDefence
 
         public bool CanPlaceTower(Tower newTower)
         {
-            Color[] pixels = new Color[newTower.texture.Width * newTower.texture.Height];
-            Color[] pixels2 = new Color[newTower.texture.Width * newTower.texture.Height];
-            newTower.texture.GetData<Color>(pixels2);
-            Game1.renderTarget.GetData(0, newTower.hitbox, pixels, 0, pixels.Length);
-            for (int i = 0; i < pixels.Length; ++i)
+            try
             {
-                if (pixels[i].A > 0.0f && pixels2[i].A > 0.0f)
-                    return false;
+                Color[] pixels = new Color[newTower.texture.Width * newTower.texture.Height];
+                Color[] pixels2 = new Color[newTower.texture.Width * newTower.texture.Height];
+                newTower.texture.GetData<Color>(pixels2);
+                Game1.renderTarget.GetData(0, newTower.hitbox, pixels, 0, pixels.Length);
+                for (int i = 0; i < pixels.Length; ++i)
+                {
+                    if (pixels[i].A > 0.0f && pixels2[i].A > 0.0f)
+                        return false;
+                }
+                return true;
             }
-            return true;
+            catch
+            {
+                return false;
+            }
+            
         }
+
+
 
         public void Draw(SpriteBatch spriteBatch)
         {

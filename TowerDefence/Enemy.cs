@@ -19,11 +19,12 @@ namespace TowerDefence
         CatmullRomPath path;
         Healthbar healthbar;
 
-        public Enemy(CatmullRomPath path) 
+        public Enemy(CatmullRomPath path, int health, float speed, int pointGain) 
         {
             this.path = path;
-            health = 100;
-            pointGain = 100;
+            this.health = health;
+            this.speed = speed;
+            this.pointGain = pointGain;
             healthbar = new Healthbar(health);
         }
 

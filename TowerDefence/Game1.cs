@@ -37,6 +37,8 @@ namespace TowerDefence
             enemyManager = new EnemyManager();
             towerManager = new TowerManager(GraphicsDevice);
 
+            this.Components.Add(new UpgradeView(this));
+
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.ApplyChanges();
@@ -56,7 +58,7 @@ namespace TowerDefence
             enemyManager.path = CreatePath();
             
 
-            towerManager.towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(330,450), new Rectangle(1, 1, 40, 40), 250, 5, 0, 0));
+            towerManager.towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(330,450), new Rectangle(1, 1, 40, 40), 250, 25, 500, 0,500));
             
 
 
@@ -117,19 +119,19 @@ namespace TowerDefence
         {
 
             GraphicsDevice.SetRenderTarget(renderTarget);
-            GraphicsDevice.Clear(Color.Green);
+            GraphicsDevice.Clear(Color.Transparent);
 
             _spriteBatch.Begin();
             towerManager.Draw(_spriteBatch);
-            
+
             gamemodeManager.Draw(_spriteBatch);
 
             enemyPath.DrawFill(GraphicsDevice, AssetManager.allTextures[0]);
             _spriteBatch.End();
             _spriteBatch.Begin();
             enemyManager.Draw(_spriteBatch);
-            
-            
+
+
             _spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);

@@ -37,12 +37,13 @@ namespace TowerDefence
                 hitBox.X = (int)vec.X;
                 hitBox.Y = (int)vec.Y;
             }
-
+            healthbar.Update(gameTime,new Vector2(hitBox.X,hitBox.Y - 40));
         }
 
         public void TakeDamage(int damage)
         {
             health -= damage;
+            healthbar.TakeDamage(health);
         }
 
         public void Draw(SpriteBatch spriteBatch)

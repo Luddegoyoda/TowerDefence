@@ -21,6 +21,9 @@ namespace TowerDefence
 
         CatmullRomPath enemyPath;
 
+        public enum GAMESTATE { MENU, PLAYING, LOST };
+        public static GAMESTATE gameState;
+
 
         public Game1()
         {
@@ -56,11 +59,8 @@ namespace TowerDefence
 
 
             enemyManager.path = CreatePath();
-            
 
-            towerManager.towers.Add(new Tower(AssetManager.allTextures[1], new Vector2(330,450), new Rectangle(1, 1, 40, 40), 250, 25, 500, 0,500));
-            
-
+            SoundManager.LoadAllSounds(Content);
 
             // TODO: use this.Content to load your game content here
         }
@@ -75,6 +75,7 @@ namespace TowerDefence
             enemyPath.AddPoint(new Vector2(400, 200));
             enemyPath.AddPoint(new Vector2(600, 350));
             enemyPath.AddPoint(new Vector2(800, 600));
+            enemyPath.AddPoint(new Vector2(990, 730));
 
             enemyPath.DrawFillSetup(GraphicsDevice, 30, 5, 26);
 
@@ -87,32 +88,61 @@ namespace TowerDefence
                 Exit();
 
             gamemodeManager.Update();
-            enemyManager.Update(gameTime);
-            towerManager.Update(gameTime);
-
-
-            foreach (Enemy enemy in enemyManager.enemies)
+            switch (gameState)
             {
-                foreach (Tower tower in towerManager.towers)
-                {
-                    float Dx = tower.position.X - enemy.hitBox.X;
-                    float Dy = tower.position.Y - enemy.hitBox.Y;
-                    float distance = (Dx * Dx) + (Dy * Dy);
-                    float radiusSquared = tower.range * tower.range;
-                    if (distance <= radiusSquared)
+                case Game1.GAMESTATE.MENU:
+                    if (Keyboard.GetState().IsKeyDown(Keys.M))
                     {
-                        tower.enemiesInRange.Add(enemy);
+                        gameState = GAMESTATE.PLAYING;
+                        ResetGame();
+                        
                     }
-                    else
+                    break;
+                case GAMESTATE.PLAYING:
+                    enemyManager.Update(gameTime);
+                    towerManager.Update(gameTime);
+
+                    foreach (Enemy enemy in enemyManager.enemies)
                     {
+                        foreach (Tower tower in towerManager.towers)
+                        {
+                            float Dx = tower.position.X - enemy.hitBox.X;
+                            float Dy = tower.position.Y - enemy.hitBox.Y;
+                            float distance = (Dx * Dx) + (Dy * Dy);
+                            float radiusSquared = tower.range * tower.range;
+                            if (distance <= radiusSquared)
+                            {
+                                tower.enemiesInRange.Add(enemy);
+                            }
+                            else
+                            {
 
-                        tower.enemiesInRange.Remove(enemy);
+                                tower.enemiesInRange.Remove(enemy);
 
+                            }
+                        }
                     }
-                }
+                    break;
+                case Game1.GAMESTATE.LOST:
+                    if (Keyboard.GetState().IsKeyDown(Keys.M))
+                    {
+                        gameState = GAMESTATE.PLAYING;
+                        ResetGame();
+                    }
+                break;
             }
+            
 
             base.Update(gameTime);
+        }
+
+        void ResetGame()
+        {
+            gameState = GAMESTATE.PLAYING;
+            gamemodeManager.Reset();
+            enemyManager.Reset();
+            towerManager.Reset();
+            towerManager.towers.Add(new Tower(AssetManager.allTextures[3], new Vector2(330, 450), new Rectangle(330, 450, 40, 40), 250, 25, 500, 0, 500,Color.Red));
         }
 
         protected override void Draw(GameTime gameTime)
@@ -138,6 +168,7 @@ namespace TowerDefence
             GraphicsDevice.Clear(Color.Green);
 
             _spriteBatch.Begin();
+            _spriteBatch.Draw(AssetManager.allTextures[4], new Rectangle(0, 0, 1280, 720), new Rectangle(0, 0, 600, 400), Color.White);
             _spriteBatch.Draw(renderTarget, Vector2.Zero, Color.White);
             _spriteBatch.End();
 

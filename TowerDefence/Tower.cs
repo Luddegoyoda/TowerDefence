@@ -10,18 +10,19 @@ namespace TowerDefence
 {
     public class Tower : GameObject
     {
+        ParticleEmitter particles;
         public Texture2D texture;
         public Vector2 position;
-        public Rectangle hitbox;
+        public Rectangle hitbox, sourceRect;
         public int range, damage, cost;
         public float attackSpeed;
         int timeToNextAttack;
-        public int damageUpgrade = 0, attackSpeedUpgrade = 0, SlowingUpgrade = 0, AOEUpgrade = 0;
+        public int damageUpgrade = 0, attackSpeedUpgrade = 0, SlowingUpgrade = 0, rangeUpgrade = 0;
         public bool showingDetail, slowing, areaOfEffect;
-
+        Color color;
         public List<Enemy> enemiesInRange;
 
-        public Tower(Texture2D texture,Vector2 position,Rectangle hitbox, int range, int damage, float attackSpeed, int timeToNextAttack, int cost) : base(texture,position,hitbox)
+        public Tower(Texture2D texture,Vector2 position,Rectangle hitbox, int range, int damage, float attackSpeed, int timeToNextAttack, int cost, Color color) : base(texture,position,hitbox)
         {
             this.texture = texture;
             this.position = position;
@@ -32,14 +33,20 @@ namespace TowerDefence
             this.timeToNextAttack = timeToNextAttack;
             this.cost = cost;
 
+            this.color = color;
+
+            particles = new ParticleEmitter();
             enemiesInRange = new List<Enemy>();
             showingDetail = false;
+            sourceRect = new Rectangle(0, 0, 40,40);
         }
 
         public override void Update(GameTime gameTime)
         {
             hitbox.X = (int)position.X;
             hitbox.Y = (int)position.Y;
+
+            particles.Update(gameTime, position);
 
             timeToNextAttack += gameTime.ElapsedGameTime.Milliseconds;
             foreach (Enemy enemy in enemiesInRange)
@@ -61,6 +68,9 @@ namespace TowerDefence
                         
                     }
                     timeToNextAttack= 0;
+                    SoundManager.PlayEffect(SoundManager.allSoundEffects[0]);
+                    particles.DeployParticles();
+
                     break;
                 }
             }
@@ -77,7 +87,8 @@ namespace TowerDefence
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, Color.White);
+            spriteBatch.Draw(texture, hitbox, sourceRect, color);
+            particles.Draw(spriteBatch);
         }
 
         

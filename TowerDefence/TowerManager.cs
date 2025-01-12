@@ -18,7 +18,12 @@ namespace TowerDefence
         public TowerManager(GraphicsDevice graphicsDevice) 
         {
             this.graphicsDevice = graphicsDevice;
-            //upgradeView= new UpgradeView();
+            
+        }
+
+        public void Reset()
+        {
+            towers.Clear();
         }
 
         public void Update(GameTime gameTime)
@@ -30,6 +35,11 @@ namespace TowerDefence
                 tower.Update(gameTime);
                 if (tower.hitbox.Contains(mousePoint) && mouseState.LeftButton == ButtonState.Pressed)
                 {
+                    foreach (Tower otherTowers in towers)
+                    {
+                        otherTowers.showingDetail = false;
+                        
+                    }
                     tower.showingDetail = true;
                     UpgradeView.ShowTowerInformation(tower);
                 }
@@ -47,7 +57,20 @@ namespace TowerDefence
             {
                 if (GamemodeManager.resources >= towers[0].cost)
                 {
-                    Tower newTower = new Tower(AssetManager.allTextures[1], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 250, 25, 500, 0, 500);
+                    Tower newTower = new Tower(AssetManager.allTextures[3], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 250, 25, 500, 0, 500,Color.Red);
+                    if (CanPlaceTower(newTower))
+                    {
+                        towers.Add(newTower);
+                        GamemodeManager.resources -= towers[0].cost;
+                    }
+
+                }
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D2))
+            {
+                if (GamemodeManager.resources >= towers[0].cost)
+                {
+                    Tower newTower = new Tower(AssetManager.allTextures[3], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 150, 40, 700, 0, 500, Color.DarkBlue);
                     if (CanPlaceTower(newTower))
                     {
                         towers.Add(newTower);
@@ -103,6 +126,7 @@ namespace TowerDefence
                 Color[] pixels = new Color[newTower.texture.Width * newTower.texture.Height];
                 Color[] pixels2 = new Color[newTower.texture.Width * newTower.texture.Height];
                 newTower.texture.GetData<Color>(pixels2);
+
                 Game1.renderTarget.GetData(0, newTower.hitbox, pixels, 0, pixels.Length);
                 for (int i = 0; i < pixels.Length; ++i)
                 {
@@ -113,7 +137,7 @@ namespace TowerDefence
             }
             catch
             {
-                return false;
+                return true;
             }
             
         }
@@ -127,7 +151,7 @@ namespace TowerDefence
                 if (tower.showingDetail)
                 {
                     circleTexture = CreateOutlinedCircleTexture(tower.range, Color.White, 1);
-                    spriteBatch.Draw(circleTexture, new Vector2(tower.position.X + 16, tower.position.Y + 16), null, Color.White, 0f, new Vector2(tower.range, tower.range), 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(circleTexture, new Vector2(tower.position.X + 15, tower.position.Y + 15), null, Color.White, 0f, new Vector2(tower.range, tower.range), 1f, SpriteEffects.None, 0f);
                 }
                 
                 tower.Draw(spriteBatch);

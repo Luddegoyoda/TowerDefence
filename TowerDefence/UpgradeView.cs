@@ -13,12 +13,12 @@ namespace TowerDefence
     {
 
         public bool isShowing = false;
-        static Button damageUpgrade,attackSpeedUpgrade,slowingButton,AOEButton;
-        static int maxDamageUpgrade = 3, maxAttackSpeed = 3, maxSlowing = 3, maxAOE = 1;
-        static int costDamageUpgrade = 400, costAttackSpeed = 400, costSlowing = 0, costAOE = 300;
+        static Button damageUpgrade,attackSpeedUpgrade,slowingButton,rangeButton;
+        static int maxDamageUpgrade = 3, maxAttackSpeed = 3, maxSlowing = 3, maxRange = 3;
+        static int costDamageUpgrade = 400, costAttackSpeed = 400, costSlowing = 800, costRange = 800;
         static Tower currentTower = null;
         static FilledRectangle backGround;
-        static TextArea text, damageText,speedText,slowingText;
+        static TextArea text, damageText,speedText,slowingText, rangeText;
 
         public UpgradeView(Game game) : base(game) 
         {
@@ -51,15 +51,15 @@ namespace TowerDefence
                 Location = new Vector2(1000, 400),
                 BackgroundColor = Color.White
             };
-            AOEButton = new Button()
+            rangeButton = new Button()
             {
-                Text = "Make AOE",
+                Text = "Upgrade Range",
                 TextColor= Color.Black,
                 Size = new Vector2(200, 50),
                 Location = new Vector2(1000, 500),
                 BackgroundColor = Color.White
             };
-            backGround = new FilledRectangle(975,150,250,350)
+            backGround = new FilledRectangle(975,150,250,450)
             {
                 BackgroundColor = Color.DarkGray
             };
@@ -91,6 +91,13 @@ namespace TowerDefence
                 Size = new Vector2(200, 50),
                 Location = new Vector2(1040, 460),
             };
+            rangeText = new TextArea()
+            {
+                Text = "Range Upgrades",
+                TextColor = Color.Black,
+                Size = new Vector2(200, 50),
+                Location = new Vector2(1040, 560),
+            };
 
             Controls.Add(backGround);
             backGround.IsVisible = false;
@@ -99,10 +106,12 @@ namespace TowerDefence
             Controls.Add(damageText);
             Controls.Add(speedText);
             Controls.Add(slowingText);
+            Controls.Add(rangeText);
             text.IsVisible = false;
             damageText.IsVisible = false;
             speedText.IsVisible = false;
             slowingText.IsVisible = false;
+            rangeText.IsVisible = false;
 
             damageUpgrade.Clicked += DamageUpgrade_Clicked;
             Controls.Add(damageUpgrade);
@@ -116,7 +125,10 @@ namespace TowerDefence
             Controls.Add(slowingButton);
             slowingButton.IsVisible = false;
 
-            
+            rangeButton.Clicked += RangeUpgrade_Clicked;
+            Controls.Add(rangeButton);
+            rangeButton.IsVisible = false;
+
         }
 
         
@@ -126,16 +138,19 @@ namespace TowerDefence
             damageUpgrade.IsVisible = true;
             attackSpeedUpgrade.IsVisible = true;
             slowingButton.IsVisible = true;
-            AOEButton.IsVisible = true;
+            rangeButton.IsVisible = true;
             backGround.IsVisible = true;
             text.IsVisible = true;
             damageText.IsVisible = true;
             speedText.IsVisible = true;
             slowingText.IsVisible = true;
+            rangeText.IsVisible = true;
 
-            damageText.Text = "" + tower.damageUpgrade.ToString() + " / " + maxDamageUpgrade;
-            speedText.Text = "" + tower.attackSpeedUpgrade.ToString() + " / " + maxAttackSpeed;
-            slowingText.Text = "" + tower.SlowingUpgrade.ToString() + " / " + maxSlowing;
+
+            damageText.Text = "" + tower.damageUpgrade.ToString() + " / " + maxDamageUpgrade + "  Cost: " + costDamageUpgrade;
+            speedText.Text = "" + tower.attackSpeedUpgrade.ToString() + " / " + maxAttackSpeed + "  Cost: " + costAttackSpeed;
+            slowingText.Text = "" + tower.SlowingUpgrade.ToString() + " / " + maxSlowing + "  Cost: " + costSlowing;
+            rangeText.Text = "" + tower.rangeUpgrade.ToString() + " / " + maxRange + "  Cost: " + costRange;
             currentTower = tower;
         }
 
@@ -144,12 +159,13 @@ namespace TowerDefence
             damageUpgrade.IsVisible = false;
             attackSpeedUpgrade.IsVisible = false;
             slowingButton.IsVisible = false;
-            AOEButton.IsVisible = false;
+            rangeButton.IsVisible = false;
             backGround.IsVisible = false;
             text.IsVisible = false;
             damageText.IsVisible = false;
             speedText.IsVisible = false;
             slowingText.IsVisible = false;
+            rangeText.IsVisible = false;
             currentTower = null;
         }
 
@@ -157,44 +173,76 @@ namespace TowerDefence
         void DamageUpgrade_Clicked(object sender, EventArgs e)
         {
             Button btn = sender as Button;
-            if (costDamageUpgrade <= GamemodeManager.resources)
+            if (currentTower != null)
             {
-                if (currentTower.damageUpgrade < maxDamageUpgrade)
+                if (costDamageUpgrade <= GamemodeManager.resources)
                 {
-                    currentTower.damageUpgrade++;
-                    GamemodeManager.resources -= costDamageUpgrade;
-                    damageText.Text = "" + currentTower.damageUpgrade.ToString() + " / " + maxDamageUpgrade;
-                }
-            }     
+                    if (currentTower.damageUpgrade < maxDamageUpgrade)
+                    {
+                        currentTower.damageUpgrade++;
+                        GamemodeManager.resources -= costDamageUpgrade;
+                        damageText.Text = "" + currentTower.damageUpgrade.ToString() + " / " + maxDamageUpgrade + "  Cost: " + costDamageUpgrade;
+                    }
+                }     
+
+            }
         }
 
         void AttackSpeedUpgrade_Clicked(object sender, EventArgs e)
         {
+
             Button btn = sender as Button;
-            if (costAttackSpeed <= GamemodeManager.resources)
+            if (currentTower != null)
             {
-                if (currentTower.attackSpeedUpgrade < maxAttackSpeed)
+                if (costAttackSpeed <= GamemodeManager.resources)
                 {
-                    currentTower.attackSpeedUpgrade++;
-                    currentTower.attackSpeed -= 100;
-                    GamemodeManager.resources -= costAttackSpeed;
-                    speedText.Text = "" + currentTower.attackSpeedUpgrade.ToString() + " / " + maxAttackSpeed;
+                    if (currentTower.attackSpeedUpgrade < maxAttackSpeed)
+                    {
+                        currentTower.attackSpeedUpgrade++;
+                        currentTower.attackSpeed -= 100;
+                        GamemodeManager.resources -= costAttackSpeed;
+                        speedText.Text = "" + currentTower.attackSpeedUpgrade.ToString() + " / " + maxAttackSpeed + "  Cost: " + costAttackSpeed;
+                    }
                 }
+
             }
         }
 
         void SlowingUpgrade_Clicked(object sender, EventArgs e)
         {
             Button btn = sender as Button;
-            if (costSlowing <= GamemodeManager.resources)
+            if (currentTower != null)
             {
-                if (currentTower.SlowingUpgrade < maxDamageUpgrade)
+                if (costSlowing <= GamemodeManager.resources)
                 {
-                    currentTower.SlowingUpgrade++;
-                    GamemodeManager.resources -= costSlowing;
-                    slowingText.Text = "" + currentTower.SlowingUpgrade.ToString() + " / " + maxSlowing;
+                    if (currentTower.SlowingUpgrade < maxDamageUpgrade)
+                    {
+                        currentTower.SlowingUpgrade++;
+                        GamemodeManager.resources -= costSlowing;
+                        slowingText.Text = "" + currentTower.SlowingUpgrade.ToString() + " / " + maxSlowing + "  Cost: " + costSlowing;
+                    }
+                }
+
+            }
+        }
+
+        void RangeUpgrade_Clicked(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+            if (currentTower != null)
+            {
+                if (costRange <= GamemodeManager.resources)
+                {
+                    if (currentTower.rangeUpgrade < maxRange)
+                    {
+                        currentTower.rangeUpgrade++;
+                        currentTower.range += 10;
+                        GamemodeManager.resources -= costRange;
+                        rangeText.Text = "" + currentTower.rangeUpgrade.ToString() + " / " + maxRange + "  Cost: " + costRange; ;
+                    }
                 }
             }
+            
         }
     }
 }

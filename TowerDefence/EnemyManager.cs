@@ -14,13 +14,25 @@ namespace TowerDefence
     {
         public CatmullRomPath path;
         public List<Enemy> enemies;
-        int timeToNextSpawn = 0, timeToNextWave = 0;
-        int spawnTimer = 200, waveSpawnTime = 5000;
+        int timeToNextSpawn = 0;
+        public static int timeToNextWave = 0;
+        int spawnTimer = 200, waveSpawnTime = 15000;
         int maxEnemies = 4;
         int currentEnemies = 0;
         public EnemyManager()
         {
             enemies = new List<Enemy>();
+        }
+
+        public void Reset()
+        {
+            spawnTimer = 200;
+            waveSpawnTime = 15000;
+            timeToNextSpawn = 0;
+            timeToNextWave = 0;
+            enemies.Clear();
+            maxEnemies= 4;
+            currentEnemies= 0;
         }
 
         public void Update(GameTime gameTime)
@@ -57,27 +69,58 @@ namespace TowerDefence
                 enemies.Clear();
                 LoadWave(gameTime);
                 maxEnemies++;
+                GamemodeManager.waveNumber++;
             }
-
-
         }
 
         public void LoadWave(GameTime gameTime)
         {
             timeToNextSpawn += gameTime.ElapsedGameTime.Milliseconds;
+            Random random = new Random();
+            
             if (currentEnemies < maxEnemies)
             {
                 if (timeToNextSpawn > spawnTimer)
                 {
                     timeToNextSpawn = 0;
                     Enemy enemy;
-                    if (maxEnemies > 8)
+                    if (maxEnemies > 20)
                     {
-                        enemy = new Enemy(path, 150, 0.5f, 250);
+                        if (random.Next(0, 4) > 2)
+                        {
+                            enemy = new Enemy(path, 1000, 0.3f, 400);
+                        }
+                        else
+                        {
+                            enemy = new Enemy(path, 400, 0.5f, 200);
+                        }
+                    }
+                    else if (maxEnemies > 15)
+                    {
+                        if (random.Next(0, 4) > 2)
+                        {
+                            enemy = new Enemy(path, 600, 0.2f, 400);
+                        }
+                        else
+                        {
+                            enemy = new Enemy(path, 250, 0.4f, 200);
+                        }
+                    }
+                    else if (maxEnemies > 9)
+                    {
+                        if (random.Next(0,4) > 2)
+                        {
+                            enemy = new Enemy(path, 350, 0.1f, 250);
+                        }
+                        else
+                        {
+                            enemy = new Enemy(path, 125, 0.25f, 150);
+                        }
+                       
                     }
                     else
                     {
-                        enemy = new Enemy(path, 50, 0.2f, 100);
+                        enemy = new Enemy(path, 50, 0.1f, 100);
                     }
                     
                     enemies.Add(enemy);

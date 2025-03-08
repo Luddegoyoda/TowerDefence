@@ -57,7 +57,7 @@ namespace TowerDefence
             {
                 if (GamemodeManager.resources >= towers[0].cost)
                 {
-                    Tower newTower = new Tower(AssetManager.allTextures[3], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 250, 25, 500, 0, 500,Color.Red);
+                    Tower newTower = new Tower(graphicsDevice,AssetManager.allTextures[3], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 250, 25, 500, 0, 500,Color.Red);
                     if (CanPlaceTower(newTower))
                     {
                         towers.Add(newTower);
@@ -70,7 +70,7 @@ namespace TowerDefence
             {
                 if (GamemodeManager.resources >= towers[0].cost)
                 {
-                    Tower newTower = new Tower(AssetManager.allTextures[3], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 150, 40, 700, 0, 500, Color.DarkBlue);
+                    Tower newTower = new Tower(graphicsDevice,AssetManager.allTextures[3], new Vector2(mousePoint.X, mousePoint.Y), new Rectangle(mousePoint.X, mousePoint.Y, 40, 40), 150, 40, 700, 0, 500, Color.DarkBlue);
                     if (CanPlaceTower(newTower))
                     {
                         towers.Add(newTower);
@@ -84,40 +84,7 @@ namespace TowerDefence
         }
 
 
-        Texture2D CreateOutlinedCircleTexture(int radius, Color color, int thickness)
-        {
-            int diameter = radius * 2;
-            Texture2D texture = new Texture2D(graphicsDevice, diameter, diameter);
-            Color[] colorData = new Color[diameter * diameter];
-
-
-            // Draw the circle outline by setting pixels only along the circle's edge
-            for (int y = 0; y < diameter; y++)
-            {
-                for (int x = 0; x < diameter; x++)
-                {
-                    int dx = x - radius;
-                    int dy = y - radius;
-                    float distanceSquared = dx * dx + dy * dy;
-                    float outerRadiusSquared = radius * radius;
-                    float innerRadiusSquared = (radius - thickness) * (radius - thickness);
-
-                    // Check if the pixel is within the outline thickness
-                    if (distanceSquared <= outerRadiusSquared && distanceSquared >= innerRadiusSquared)
-                    {
-                        colorData[x + y * diameter] = color;
-                    }
-                    else
-                    {
-                        colorData[x + y * diameter] = Color.Transparent;
-                    }
-                }
-            }
-
-            texture.SetData(colorData);
-            return texture;
-
-        }
+        
 
         public bool CanPlaceTower(Tower newTower)
         {
@@ -150,8 +117,7 @@ namespace TowerDefence
             {
                 if (tower.showingDetail)
                 {
-                    circleTexture = CreateOutlinedCircleTexture(tower.range, Color.White, 1);
-                    spriteBatch.Draw(circleTexture, new Vector2(tower.position.X + 15, tower.position.Y + 15), null, Color.White, 0f, new Vector2(tower.range, tower.range), 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(tower.circleTexture, new Vector2(tower.position.X + 15, tower.position.Y + 15), null, Color.White, 0f, new Vector2(tower.range, tower.range), 1f, SpriteEffects.None, 0f);
                 }
                 
                 tower.Draw(spriteBatch);

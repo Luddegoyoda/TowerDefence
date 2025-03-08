@@ -21,7 +21,9 @@ namespace TowerDefence
 
         CatmullRomPath enemyPath;
 
-        public enum GAMESTATE { MENU, PLAYING, LOST };
+        MouseState lastMouseState = new MouseState();
+
+        public enum GAMESTATE { MENU, PLAYING, LOST, EDITOR };
         public static GAMESTATE gameState;
 
 
@@ -97,6 +99,12 @@ namespace TowerDefence
                         ResetGame();
                         
                     }
+                    if (Keyboard.GetState().IsKeyDown(Keys.E))
+                    {
+                        gameState = GAMESTATE.EDITOR;
+                        enemyManager.path.Clear();
+                        enemyPath.Clear();
+                    }
                     break;
                 case GAMESTATE.PLAYING:
                     enemyManager.Update(gameTime);
@@ -116,9 +124,7 @@ namespace TowerDefence
                             }
                             else
                             {
-
                                 tower.enemiesInRange.Remove(enemy);
-
                             }
                         }
                     }
@@ -130,6 +136,22 @@ namespace TowerDefence
                         ResetGame();
                     }
                 break;
+
+                case Game1.GAMESTATE.EDITOR:
+                    if (Keyboard.GetState().IsKeyDown(Keys.K))
+                    {
+                        gameState = GAMESTATE.MENU;
+                    }
+                    
+                    var mouseState = Mouse.GetState();
+                    var mousePoint = new Point(mouseState.X, mouseState.Y);
+                    if (mouseState.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released)
+                    {
+                        
+                        enemyPath.AddPoint(new Vector2(mousePoint.X,mousePoint.Y));
+                    }
+                    lastMouseState = mouseState;
+                    break;
             }
             
 
@@ -142,7 +164,7 @@ namespace TowerDefence
             gamemodeManager.Reset();
             enemyManager.Reset();
             towerManager.Reset();
-            towerManager.towers.Add(new Tower(AssetManager.allTextures[3], new Vector2(330, 450), new Rectangle(330, 450, 40, 40), 250, 25, 500, 0, 500,Color.Red));
+            towerManager.towers.Add(new Tower(GraphicsDevice,AssetManager.allTextures[3], new Vector2(330, 450), new Rectangle(330, 450, 40, 40), 250, 25, 500, 0, 500,Color.Red));
         }
 
         protected override void Draw(GameTime gameTime)
@@ -156,7 +178,13 @@ namespace TowerDefence
 
             gamemodeManager.Draw(_spriteBatch);
 
-            enemyPath.DrawFill(GraphicsDevice, AssetManager.allTextures[0]);
+            Vector2[] points = enemyPath.GetPoints();
+            if (points.Length > 1)
+            {
+                enemyPath.DrawFillSetup(GraphicsDevice, 30, 10, 90);
+                enemyPath.DrawFill(GraphicsDevice, AssetManager.allTextures[0]);
+            }
+            
             _spriteBatch.End();
             _spriteBatch.Begin();
             enemyManager.Draw(_spriteBatch);

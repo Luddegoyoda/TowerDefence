@@ -237,6 +237,7 @@ namespace TowerDefence
                     {
                         currentTower.rangeUpgrade++;
                         currentTower.range += 10;
+                        currentTower.UpdateRangeIndicator();
                         GamemodeManager.resources -= costRange;
                         rangeText.Text = "" + currentTower.rangeUpgrade.ToString() + " / " + maxRange + "  Cost: " + costRange; ;
                     }

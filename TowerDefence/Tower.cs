@@ -11,7 +11,7 @@ namespace TowerDefence
     public class Tower : GameObject
     {
         ParticleEmitter particles;
-        public Texture2D texture;
+        public Texture2D texture, circleTexture;
         public Vector2 position;
         public Rectangle hitbox, sourceRect;
         public int range, damage, cost;
@@ -21,8 +21,9 @@ namespace TowerDefence
         public bool showingDetail, slowing, areaOfEffect;
         Color color;
         public List<Enemy> enemiesInRange;
+        GraphicsDevice graphicsDevice;
 
-        public Tower(Texture2D texture,Vector2 position,Rectangle hitbox, int range, int damage, float attackSpeed, int timeToNextAttack, int cost, Color color) : base(texture,position,hitbox)
+        public Tower(GraphicsDevice graphicsDevice, Texture2D texture,Vector2 position,Rectangle hitbox, int range, int damage, float attackSpeed, int timeToNextAttack, int cost, Color color) : base(texture,position,hitbox)
         {
             this.texture = texture;
             this.position = position;
@@ -32,6 +33,7 @@ namespace TowerDefence
             this.attackSpeed = attackSpeed;
             this.timeToNextAttack = timeToNextAttack;
             this.cost = cost;
+            this.graphicsDevice= graphicsDevice;
 
             this.color = color;
 
@@ -39,6 +41,8 @@ namespace TowerDefence
             enemiesInRange = new List<Enemy>();
             showingDetail = false;
             sourceRect = new Rectangle(0, 0, 40,40);
+
+            circleTexture = CreateOutlinedCircleTexture(range, Color.White, 1);
         }
 
         public override void Update(GameTime gameTime)
@@ -83,6 +87,45 @@ namespace TowerDefence
             }
         }
 
+        public void UpdateRangeIndicator() 
+        {
+            circleTexture = CreateOutlinedCircleTexture(range, Color.White, 1);
+        }
+
+        Texture2D CreateOutlinedCircleTexture(int radius, Color color, int thickness)
+        {
+            int diameter = radius * 2;
+            Texture2D texture = new Texture2D(graphicsDevice, diameter, diameter);
+            Color[] colorData = new Color[diameter * diameter];
+
+
+            // Draw the circle outline by setting pixels only along the circle's edge
+            for (int y = 0; y < diameter; y++)
+            {
+                for (int x = 0; x < diameter; x++)
+                {
+                    int dx = x - radius;
+                    int dy = y - radius;
+                    float distanceSquared = dx * dx + dy * dy;
+                    float outerRadiusSquared = radius * radius;
+                    float innerRadiusSquared = (radius - thickness) * (radius - thickness);
+
+                    // Check if the pixel is within the outline thickness
+                    if (distanceSquared <= outerRadiusSquared && distanceSquared >= innerRadiusSquared)
+                    {
+                        colorData[x + y * diameter] = color;
+                    }
+                    else
+                    {
+                        colorData[x + y * diameter] = Color.Transparent;
+                    }
+                }
+            }
+
+            texture.SetData(colorData);
+            return texture;
+
+        }
 
 
         public override void Draw(SpriteBatch spriteBatch)

@@ -45,6 +45,7 @@ namespace TowerDefence
                     
                     spriteBatch.DrawString(AssetManager.font, "Defence of the computer", new Vector2(400, 0), Color.Black, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(AssetManager.font, "Press [M] to play", new Vector2(400, 30), Color.Black, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(AssetManager.font, "Press [E] to enter the map editor", new Vector2(400, 60), Color.Black, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
 
                     
                     break;
@@ -63,6 +64,9 @@ namespace TowerDefence
                 case Game1.GAMESTATE.LOST:
                     spriteBatch.DrawString(AssetManager.font, "The computer has been infected by the virus!", new Vector2(500, 200), Color.Black, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(AssetManager.font, "Press [M] to play again!", new Vector2(500, 220), Color.Black, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    break;
+                case Game1.GAMESTATE.EDITOR:
+                    spriteBatch.DrawString(AssetManager.font, "Press [K] to exit the map editor", new Vector2(500, 100), Color.Black, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
                     break;
             }
             

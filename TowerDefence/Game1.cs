@@ -93,7 +93,7 @@ namespace TowerDefence
             switch (gameState)
             {
                 case Game1.GAMESTATE.MENU:
-                    if (Keyboard.GetState().IsKeyDown(Keys.M))
+                    if (Keyboard.GetState().IsKeyDown(Keys.P))
                     {
                         gameState = GAMESTATE.PLAYING;
                         ResetGame();

@@ -20,10 +20,10 @@ namespace TowerDefence
 
         public void DeployParticles()
         {
-            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15,startPosition.Y + 15), new Rectangle(0, 0, 8, 8), 100, new Vector2(1, 1), 3, Color.Pink));
-            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15, startPosition.Y + 15), new Rectangle(0, 0, 8, 8), 100, new Vector2(-1, 1), 3, Color.LightBlue));
-            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15, startPosition.Y + 15), new Rectangle(0, 0, 8, 8), 100, new Vector2(1, -1), 3, Color.LightBlue));
-            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15, startPosition.Y + 15), new Rectangle(0, 0, 8, 8), 100, new Vector2(-1, -1), 3, Color.LightBlue));
+            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15,startPosition.Y + 15), new Rectangle((int)startPosition.X + 15, (int)startPosition.Y + 15, 8, 8), 100, new Vector2(1, 1), 3, Color.Pink));
+            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15, startPosition.Y + 15), new Rectangle((int)startPosition.X + 15, (int)startPosition.Y + 15, 8, 8), 100, new Vector2(-1, 1), 3, Color.LightBlue));
+            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15, startPosition.Y + 15), new Rectangle((int)startPosition.X + 15, (int)startPosition.Y + 15, 8, 8), 100, new Vector2(1, -1), 3, Color.LightBlue));
+            particles.Add(new Particle(AssetManager.allTextures[0], new Vector2(startPosition.X + 15, startPosition.Y + 15), new Rectangle((int)startPosition.X + 15, (int)startPosition.Y + 15, 8, 8), 100, new Vector2(-1, -1), 3, Color.LightBlue));
         }
 
         public void Update(GameTime gameTime, Vector2 startPosition)
